@@ -1,7 +1,11 @@
 package org.sid.bank_account_service.web;
 
+import org.sid.bank_account_service.dto.BankAccountRequestDTO;
+import org.sid.bank_account_service.dto.BankAccountResponseDTO;
 import org.sid.bank_account_service.entities.BankAccount;
+import org.sid.bank_account_service.mappers.AccountMapper;
 import org.sid.bank_account_service.repositories.BankAccountRepository;
+import org.sid.bank_account_service.service.AccountService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -11,8 +15,12 @@ import java.util.List;
 @RequestMapping("/api")
 public class AccountRestController {
     private BankAccountRepository bankAccountRepository;
-    public AccountRestController(BankAccountRepository bankAccountRepository) {
+    private AccountService accountService;
+    private AccountMapper accountMapper;
+
+    public AccountRestController(BankAccountRepository bankAccountRepository, AccountMapper accountMapper) {
         this.bankAccountRepository = bankAccountRepository = bankAccountRepository;
+        this.accountMapper = accountMapper;
     }
     @GetMapping("/bankAccounts")
     public List<BankAccount> bankAccounts(){
@@ -25,8 +33,8 @@ public class AccountRestController {
     }
 
     @PostMapping("/bankAccounts")
-    public BankAccount save(@RequestBody BankAccount bankAccount){
-        return bankAccountRepository.save(bankAccount);
+    public BankAccountResponseDTO save(@RequestBody BankAccountRequestDTO requestDTO){
+        return accountService.addAccount(requestDTO);
     }
     @PutMapping("/bankAccounts/{id}")
     public BankAccount update(@PathVariable String id,@RequestBody BankAccount bankAccount){
